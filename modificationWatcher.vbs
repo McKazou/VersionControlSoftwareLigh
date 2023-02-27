@@ -5,9 +5,9 @@ Module modificationWatcher
 
 Sub Main()
   'call MainLoop()
-end sub
+End Sub
 
-Sub MainLoop()
+  Sub MainLoop()
         While True
             ' Get the git log output
             Dim gitLogProcess As New Process()
@@ -50,6 +50,34 @@ Sub MainLoop()
         End While
     End Sub
 
+Function getFilesListInFolder2(sourceFolder)
+  'Recursive Function to get all files : https://devblogs.microsoft.com/scripting/how-can-i-get-a-list-of-all-the-files-in-a-folder-and-its-subfolders/
+  
+  Set objFSO = CreateObject(“Scripting.FileSystemObject”)
+  objStartFolder = “sourceFolder”
+
+  Set objFolder = objFSO.GetFolder(objStartFolder)
+  Wscript.Echo objFolder.Path
+  Set colFiles = objFolder.Files
+  For Each objFile in colFiles
+      Wscript.Echo objFile.Name
+  Next
+  Wscript.Echo
+  ShowSubfolders objFSO.GetFolder(objStartFolder)
+  Sub ShowSubFolders(Folder)
+      For Each Subfolder in Folder.SubFolders
+          Wscript.Echo Subfolder.Path
+          Set objFolder = objFSO.GetFolder(Subfolder.Path)
+          Set colFiles = objFolder.Files
+          For Each objFile in colFiles
+              Wscript.Echo objFile.Name
+          Next
+          Wscript.Echo
+          ShowSubFolders Subfolder
+      Next
+  End Sub
+End Function
+
 Function getFilesListInFolder1(sourceFolder)
   'tentative using : http://www.thescarms.com/dotnet/listfiles.aspx
   'sourceFolder as a string : "\\stccwp0015\Worksresearsh$\130_STELLANTIS\10_CAD\09 - Stellantis 48v - 2x6s1p"
@@ -68,7 +96,7 @@ Function getFilesListInFolder1(sourceFolder)
         Console.WriteLine("Last Accessed: {0}", fi.LastAccessTime)
         Console.WriteLine("Read Only: {0}", (fi.Attributes.ReadOnly = True).ToString)
     Next
-End function
+End Function
 
 End Module
 
