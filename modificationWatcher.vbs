@@ -1,50 +1,74 @@
 Imports System.IO
 Imports System.Diagnostics
 
-Module Module1
+Module modificationWatcher
 
-    Sub Main()
-        While True
-            ' Get the git log output
-            Dim gitLogProcess As New Process()
-            gitLogProcess.StartInfo.FileName = "git"
-            gitLogProcess.StartInfo.Arguments = "log --pretty=format:%h,%s,%ad"
-            gitLogProcess.StartInfo.UseShellExecute = False
-            gitLogProcess.StartInfo.RedirectStandardOutput = True
-            gitLogProcess.Start()
+Sub Main()
+  'call MainLoop()
+end sub
 
-            Dim gitLogOutput As String = gitLogProcess.StandardOutput.ReadToEnd()
+Sub MainLoop()
+Â  Â  Â  Â  While True
+Â  Â  Â  Â  Â  Â  ' Get the git log output
+Â  Â  Â  Â  Â  Â  Dim gitLogProcess As New Process()
+Â  Â  Â  Â  Â  Â  gitLogProcess.StartInfo.FileName = "git"
+Â  Â  Â  Â  Â  Â  gitLogProcess.StartInfo.Arguments = "log --pretty=format:%h,%s,%ad"
+Â  Â  Â  Â  Â  Â  gitLogProcess.StartInfo.UseShellExecute = False
+Â  Â  Â  Â  Â  Â  gitLogProcess.StartInfo.RedirectStandardOutput = True
+Â  Â  Â  Â  Â  Â  gitLogProcess.Start()
 
-            gitLogProcess.WaitForExit()
+Â  Â  Â  Â  Â  Â  Dim gitLogOutput As String = gitLogProcess.StandardOutput.ReadToEnd()
 
-            ' Split the output into lines
-            Dim gitLogLines() As String = gitLogOutput.Split(Environment.NewLine)
+Â  Â  Â  Â  Â  Â  gitLogProcess.WaitForExit()
 
-            ' Open the CSV file for writing
-            Dim csvFileName As String = "git_log.csv"
-            Dim csvFileWriter As New StreamWriter(csvFileName)
+Â  Â  Â  Â  Â  Â  ' Split the output into lines
+Â  Â  Â  Â  Â  Â  Dim gitLogLines() As String = gitLogOutput.Split(Environment.NewLine)
 
-            ' Write the header row
-            csvFileWriter.WriteLine("Commit ID,Message,Date")
+Â  Â  Â  Â  Â  Â  ' Open the CSV file for writing
+Â  Â  Â  Â  Â  Â  Dim csvFileName As String = "git_log.csv"
+Â  Â  Â  Â  Â  Â  Dim csvFileWriter As New StreamWriter(csvFileName)
 
-            ' Write each line to the CSV file
-            For Each line As String In gitLogLines
-                If line.Trim() <> "" Then
-                    Dim lineParts() As String = line.Split(",", 3)
-                    Dim commitId As String = lineParts(0).Trim()
-                    Dim message As String = lineParts(1).Trim()
-                    Dim dateStr As String = lineParts(2).Trim()
+Â  Â  Â  Â  Â  Â  ' Write the header row
+Â  Â  Â  Â  Â  Â  csvFileWriter.WriteLine("Commit ID,Message,Date")
 
-                    csvFileWriter.WriteLine(commitId & "," & message & "," & dateStr)
-                End If
-            Next
+Â  Â  Â  Â  Â  Â  ' Write each line to the CSV file
+Â  Â  Â  Â  Â  Â  For Each line As String In gitLogLines
+Â  Â  Â  Â  Â  Â  Â  Â  If line.Trim() <> "" Then
+Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  Dim lineParts() As String = line.Split(",", 3)
+Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  Dim commitId As String = lineParts(0).Trim()
+Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  Dim message As String = lineParts(1).Trim()
+Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  Dim dateStr As String = lineParts(2).Trim()
 
-            csvFileWriter.Close()
+Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  csvFileWriter.WriteLine(commitId & "," & message & "," & dateStr)
+Â  Â  Â  Â  Â  Â  Â  Â  End If
+Â  Â  Â  Â  Â  Â  Next
 
-            ' Wait for 15 minutes before running the script again
-            Threading.Thread.Sleep(15 * 60 * 1000)
-        End While
-    End Sub
+Â  Â  Â  Â  Â  Â  csvFileWriter.Close()
+
+Â  Â  Â  Â  Â  Â  ' Wait for 15 minutes before running the script again
+Â  Â  Â  Â  Â  Â  Threading.Thread.Sleep(15 * 60 * 1000)
+Â  Â  Â  Â  End While
+Â  Â  End Sub
+
+Function getFilesListInFolder1(sourceFolder)
+  'tentative using : http://www.thescarms.com/dotnet/listfiles.aspx
+  'sourceFolder as a string : "\\stccwp0015\Worksresearsh$\130_STELLANTIS\10_CAD\09 - Stellantis 48v - 2x6s1p"
+  
+    Dim strFileSize As String = ""
+    Dim di As New IO.DirectoryInfo(sourceFolder)
+    Dim aryFi As IO.FileInfo() = di.GetFiles("*.txt")
+    Dim fi As IO.FileInfo
+
+    For Each fi In aryFi
+        strFileSize = (Math.Round(fi.Length / 1024)).ToString()
+        Console.WriteLine("File Name: {0}", fi.Name)
+        Console.WriteLine("File Full Name: {0}", fi.FullName)
+        Console.WriteLine("File Size (KB): {0}", strFileSize )
+        Console.WriteLine("File Extension: {0}", fi.Extension)
+        Console.WriteLine("Last Accessed: {0}", fi.LastAccessTime)
+        Console.WriteLine("Read Only: {0}", (fi.Attributes.ReadOnly = True).ToString)
+    Next
+End function
 
 End Module
 
