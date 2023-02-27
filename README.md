@@ -46,6 +46,7 @@ What can be done with git :
   git log --pretty=format:%h,%an,%ae,%s > /path/to/file.csv 
   ```  
   (source:https://stackoverflow.com/questions/39253307/export-git-log-into-an-excel-file)
+  
    3. [ ] Have an app read the CSV file
    4. [ ] If modified files exist withing the time period
      ```
