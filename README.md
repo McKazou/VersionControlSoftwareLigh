@@ -1,16 +1,53 @@
 # VersionControlSoftwareLigh
 Version Control App, managing a specified folder, and writing change into Excel file so it's light, easy to use for anyone.
 
-The idea behind this is to have a small programm running in the background.
+## Use Case
+The software will be able to track change done to files and summarize them into a more readable way. 
+1. I want a program running in the background
+2. I want the program to ask, whenever i save a .prt file so i can add a commit message of why i did the modification.
+- If it's only a sauvegarde on top of the saved part; simply update the last modified date and add the commit message to the previous commit message added.
+- If i "Save As" to add a new version of a file it should be tracked as an new "children" of a previous one
+         => so i can have a list of all version of a specified part
+         It should set the all previous version to a readonly state
+3. I want the software to summarize all committed message into different .csv files; one for each parts (I should have a way to ignore some files)
+```
+<fileNamePath>,<partName>,<dateModification>,<commitMessage>,<dateCommit>
+```
+
+On the excel:
+1. A way to see:
+   - A list of what changed compared between two dates
+   - A list of each revision for each part
+2. An excel will read those csv files to print them into an excel. The Excel should containt: 
+      - The part miniature
+      - The Part name
+      - The last version (AA_AA06)
+      - Status ("Archived"(marron), "Work in Progress"(yellow), "Studies"(blue), "invalid"(red)
+      - The commit message
+      - A go to link
+3. Can it have the tree ?
+
+## Tracked files names :
+1. I want to track different files base on the same syntaxe;
+   a. Syntaxe 1 : BAT110000013-AA_AA76_K0_X250-Battery_Pack_48V_Assembly_230302 => BAT\d{9}-([A-Za-z]{2})_([A-Za-z]{2})\d{2}_.*_\d{6}(_.*)?
+      See : https://regex101.com/delete/2ZeCuWFbc2wwsC2XXlE6k4XQ
+   b. Syntaxe 2 : STEL9_IN_CONTEXT_230302 => \w*\d*_.*_\d{6}
+      See : https://regex101.com/delete/yJrQqk5Nxv6DKhhO5TW5TPWG
+      
+I've found a script based on windows log : https://stackoverflow.com/questions/10041057/how-to-monitoring-folder-files-by-vbs that does the watching part.
+Another : https://social.technet.microsoft.com/Forums/scriptcenter/en-US/6064064e-d273-41c1-9135-cc883735a465/vbscript-monitor-a-folder-and-sub-sub-folders?forum=ITCG
 
 ## Manual version : 
-1. [ ] Look into one or multiple given folder(s). 
-2. [ ] On a time based trigger it will start looking into each folder.
-3. [ ] In each folder it will list very single file in it.
-4. [ ] Each time a file is saved (last save date > last reccorded save date)
-5. [ ] It will store the modified filed into a dictionnary based on the saved date
-6. [ ] At the end of the query, it will prompt a notification if a file has been modified.
-7. [ ] (1) It will prompt a message "(5) files have been modified, do you want to specified Commit message now ?"
+1. [x] Look into one or multiple given folder(s). 
+2. [ ] List all folders in the targeted folder(s)
+3. [ ] On a time based trigger it will update the folder list
+4. [ ] Add a listener on each folder
+5. [ ] On event start get what file have been modify or created
+6. [ ] It will store the modified filed into a dictionnary based on the saved date
+7. [ ] Prompt a message to add a commit message; into the systemTray (https://omen999.developpez.com/tutoriels/vbs/DynamicWrapperX/) for 30s then hide
+   - if it's a saved file on itself => add the commit message to the previous one
+   - if it's a new file (new indice) => set the previous file as read only
+8. [ ] It will prompt a message "(5) files have been modified, do you want to specified Commit message now ?"
 9. [ ] Clicking on it will show a UI listing any modified files
    - you will be able to add a commit message to specified "why"
    - you will be able to ignore this file
@@ -21,35 +58,4 @@ The idea behind this is to have a small programm running in the background.
      |<Date2> has been modified :"    <insert a commit message> 
      |<Date...> has been modified :"  <insert a commit message>" 
   ```
-9. [ ] Each commited files will be set as read only
-10. [ ] Each commit message will be added to an excel file with : 
-```
-<miniature> <fileName> <dateModification> <commitMessage> <dateCommit>
-```
 
-## Git version:
-Git is a powerfull version control tool but it handles binary file really badly : https://stackoverflow.com/questions/4697216/is-git-good-with-binary-files
-It mean Git have to ignore merge cmd
-
-What can be done with git : 
-  1. [ ] Run an app in background running the bast command to use GIT
-  2. [ ] GIT : Have a list of the modified file since the last log  and print it to a file
-    based cmd: 
-  ```
-  -- git log 
-  ```
-  
-    a. [ ] List of last modified log 
-    b. [ ] Print the log to a csv file     
-    
-  ```
-  git log --pretty=format:%h,%an,%ae,%s > /path/to/file.csv 
-  ```  
-  (source:https://stackoverflow.com/questions/39253307/export-git-log-into-an-excel-file)
-  
-   3. [ ] Have an app read the CSV file
-   4. [ ] If modified files exist withing the time period
-     ```
-     Go to (1) 
-     ```
-   5. [ ] Modify&format the log using excel => powerquery
