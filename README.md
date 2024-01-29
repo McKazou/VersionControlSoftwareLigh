@@ -3,6 +3,8 @@ Version Control App, managing a specified folder, and writing change into Excel 
 
 The idea behind this is to have a small programm running in the background.
 
+VBS semble être une mauvaise idée et powerscript semble plus adequat
+
 ## Manual version : 
 1. [ ] Look into one or multiple given folder(s). 
 2. [ ] On a time based trigger it will start looking into each folder.
