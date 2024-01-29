@@ -7,7 +7,7 @@ Dim WshShell
 Set WshShell = CreateObject("WScript.Shell")
 dim currentDir
 currentDir = WshShell.CurrentDirectory
-'WScript.Echo "[modificationWatcher] Started from : "& currentDir&"\FileManipulation.vbs"
+WScript.Echo "[DebugUtility] Started from : "& currentDir&"\DebugUtility.vbs"
 Include currentDir&"\FileManipulation.vbs"
 
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
@@ -87,7 +87,7 @@ Class DebugUtility
 end class
 
 '---------TESTING-----------
-function testDebugUtility()
+private function testDebugUtility()
 
     Dim oDebug
     set oDebug = new DebugUtility
@@ -108,16 +108,21 @@ function testDebugUtility()
 end function
 
 Private Sub Include( scriptName )
-    WScript.Echo "[LOADING]: "&scriptName
+
     Dim sScript
     Dim oStream
     With CreateObject( "Scripting.FileSystemobject" )
-        set oStream = .OpenTextFile(scriptName)
+        if .FileExists(scriptName) then
+            WScript.Echo "[LOADING]: "&scriptName
+            set oStream = .OpenTextFile(scriptName)
+            sScript = oStream.ReadAll()
+            oStream.Close
+            ExecuteGlobal sScript
+            WScript.Echo "[LOADED]: "&scriptName
+        else 
+            WScript.Echo "[NOT LOADED]: "&scriptName& " - Probably already loaded"
+        end if
     End With
-    sScript = oStream.ReadAll()
-    oStream.Close
-    ExecuteGlobal sScript
-    WScript.Echo "[LOADED]: "&scriptName
 
     Call ErrorHandler
 End Sub

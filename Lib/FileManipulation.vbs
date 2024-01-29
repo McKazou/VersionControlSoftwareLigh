@@ -1,7 +1,7 @@
 Option Explicit
 On Error Resume Next
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
-call test()
+'call test()
 'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
 'Include "".\FileManipulation.vbs"
 
@@ -208,22 +208,22 @@ Class FileManipulation
 end class
 
 '---------TESTING-----------
-function test()
+private function test()
 
     Dim fileManip
     set fileManip = new FileManipulation
 
     Dim activefolder
     activefolder = fileManip.getPathWhereScriptIsRun()
-    WScript.Echo "[TESTING] The script is run from: " & activefolder
+    WScript.Echo "[TESTING - FILEMANIPULATION] The script is run from: " & activefolder
 
     Dim userFolder
     userFolder = fileManip.getUserFolder()
-    WScript.Echo "[TESTING] User's home folder is: " & userFolder
-    WScript.Echo "[TESTING RESULT] getFolderFromPath: " & fileManip.getFolderFromPath(userFolder & "\Downloads\").path
+    WScript.Echo "[TESTING - FILEMANIPULATION] User's home folder is: " & userFolder
+    WScript.Echo "[TESTING - FILEMANIPULATION RESULT] getFolderFromPath: " & fileManip.getFolderFromPath(userFolder & "\Downloads\").path
 
     'filePresence
-    WScript.Echo "[TESTING] if file exist <.\VBsLib\renameMe.txt> "
+    WScript.Echo "[TESTING - FILEMANIPULATION] if file exist <.\VBsLib\renameMe.txt> "
     Dim filePresence
     filePresence = fileManip.FileExists(".\VBsLib\renameMe.txt")
     WScript.Echo "[TESTING RESULT] file exist " & filePresence
@@ -232,7 +232,7 @@ function test()
     path = ".\VBsLib\"
     set files = fileManip.FileFinder(path,false,1)
     For each file in files
-        WScript.Echo "[TESTING] File found: " & file
+        WScript.Echo "[TESTING - FILEMANIPULATION] File found: " & file
     Next
 
     Dim filePathToRename

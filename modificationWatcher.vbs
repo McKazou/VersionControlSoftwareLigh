@@ -8,8 +8,9 @@ dim currentDir
 currentDir = WshShell.CurrentDirectory
 WScript.Echo "[modificationWatcher] Started from : "& currentDir
 'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
-Include currentDir&"\Lib\DebugUtility.vbs"
 Include currentDir&"\Lib\FileManipulation.vbs"
+Include currentDir&"\Lib\DebugUtility.vbs"
+
 
 Dim debugTool
 set debugTool = new DebugUtility
@@ -20,12 +21,13 @@ set CADFileWatcher = new modificationWatcher
 CADFileWatcher.addFolderRecursive("\\stccwp0015\Worksresearsh$\130_STELLANTIS\10_CAD\09 - Stellantis 48v - 2x6s1p")
 
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
-'call test()
+call test()
 
+'at this point i've read lot of stuff saying : WHO THE FUCK USE VBS WHY NOT PowerShell ?
 
 Class modificationWatcher
 
-    Private watchFolder()
+    Private watchFolder
 
     Public sub addFolderRecursive(newFolderPath)
         Dim fileManip
@@ -50,7 +52,7 @@ Class modificationWatcher
     '----------------EVENTS----------------
     Private Sub Class_Initialize(  )
         'Getting all processRunning at object creation
-        Set watchFolder = CreateObject("System.Collections.ArrayList")
+        set watchFolder = CreateObject("System.Collections.ArrayList")
         Call ErrorHandler
     End Sub
     
@@ -63,24 +65,30 @@ Class modificationWatcher
 end class
 
 '---------TESTING-----------
-function test()
+sub test()
 
     WScript.Echo "[TESTING] The script is run from: " & activefolder
 
-end function
+end sub
 
 '--------------INCLUDE OTHER FILES----------------
 Private Sub Include( scriptName )
-    WScript.Echo "[LOADING]: "&scriptName
+
     Dim sScript
     Dim oStream
     With CreateObject( "Scripting.FileSystemobject" )
-        Set oStream = .OpenTextFile(scriptName)
+        if .FileExists(scriptName) then
+            WScript.Echo "[LOADING]: "&scriptName
+            set oStream = .OpenTextFile(scriptName)
+            sScript = oStream.ReadAll()
+            oStream.Close
+            ExecuteGlobal sScript
+            WScript.Echo "[LOADED]: "&scriptName
+        else 
+            WScript.Echo  "[NOT LOADED]: "&scriptName& " - Probably already loaded"
+        end if
     End With
-    sScript = oStream.ReadAll()
-    oStream.Close
-    ExecuteGlobal sScript
-    WScript.Echo "[LOADED]: "&scriptName
+
     Call ErrorHandler
 End Sub
 
