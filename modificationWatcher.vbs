@@ -7,38 +7,37 @@ Set WshShell = CreateObject("WScript.Shell")
 dim currentDir
 currentDir = WshShell.CurrentDirectory
 WScript.Echo "[modificationWatcher] Started from : "& currentDir
+'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
+Include currentDir&"\Lib\DebugUtility.vbs"
+Include currentDir&"\Lib\FileManipulation.vbs"
 
-Include currentDir&"\VBsLib\DebugUtility.vbs"
-'Include currentDir&"\VBsLib\FileManipulation.vbs"
 Dim debugTool
 set debugTool = new DebugUtility
 
+
 Dim CADFileWatcher 
 set CADFileWatcher = new modificationWatcher
-CADFileWatcher.addFolderToWatch("\\stccwp0015\Worksresearsh$\130_STELLANTIS\10_CAD\09 - Stellantis 48v - 2x6s1p")
+CADFileWatcher.addFolderRecursive("\\stccwp0015\Worksresearsh$\130_STELLANTIS\10_CAD\09 - Stellantis 48v - 2x6s1p")
 
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
 'call test()
-'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
-'Include "".\FileManipulation.vbs"
+
 
 Class modificationWatcher
 
-    '--------------LISTING FILES----------------------
-    Dim fileManip
-    set fileManip = new FileManipulation
-    Dim isRecursif 
-    isRecursif = true
-    Dim recursifLimit
-    recursifLimit = 15
-    Dim filesFound
-    set filesFound = fileManip.FileFinder(selectedFolder(0), isRecursif, recursifLimit)
-
-    debugTool.startWrittingInConsole()
-    debugTool.printTable(filesFound)
-    debugTool.stopWrittingInConsole()
-
     Private watchFolder()
+
+    Public sub addFolderRecursive(newFolderPath)
+        Dim fileManip
+        set fileManip = new FileManipulation
+        '--------------LISTING FILES----------------------
+        Dim filesFound
+        set filesFound = fileManip.FileFinder(newFolderPath, TRUE, 15)
+
+        debugTool.startWrittingInConsole()
+        debugTool.printTable(filesFound)
+        debugTool.stopWrittingInConsole()
+    end sub
 
     Public Sub addFolderToWatch(newFolderPath)
         watchFolder.Add(newFolderPath)

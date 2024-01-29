@@ -1,10 +1,9 @@
 Option Explicit
 On Error Resume Next
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
-'call test()
+call test()
 'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
 'Include "".\FileManipulation.vbs"
-
 
 Class FileManipulation
 

@@ -2,10 +2,16 @@ Option Explicit
 'On Error Resume Next
 'To USE ME call the add a "include" sub inside the main script like the one at the bottom of this page
 'Include .\FileManipulation.vbs
-Include "P:\07_Code\VB\VBsLib\FileManipulation.vbs"
+'------------ReUSE OTHER SCRIPT----------------
+Dim WshShell
+Set WshShell = CreateObject("WScript.Shell")
+dim currentDir
+currentDir = WshShell.CurrentDirectory
+'WScript.Echo "[modificationWatcher] Started from : "& currentDir&"\FileManipulation.vbs"
+Include currentDir&"\FileManipulation.vbs"
 
 'CLASS OBJECT : https://www.tutorialspoint.com/vbscript/vbscript_class_objects.htm
-testDebugUtility()
+'testDebugUtility()
 
 Class DebugUtility
 
@@ -106,7 +112,7 @@ Private Sub Include( scriptName )
     Dim sScript
     Dim oStream
     With CreateObject( "Scripting.FileSystemobject" )
-        Set oStream = .OpenTextFile(scriptName)
+        set oStream = .OpenTextFile(scriptName)
     End With
     sScript = oStream.ReadAll()
     oStream.Close
